@@ -1,0 +1,37 @@
+{
+    "name": "ufado/tron-php",
+    "description": "Support TRON's TRX and TRC20, which include functions such as address creation, balance query, transaction transfer, query the latest blockchain, query information based on the blockchain, and query information based on the transaction hash",
+    "keywords": [
+        "php",
+        "tron",
+        "trx",
+        "trc20"
+    ],
+    "type": "library",
+    "homepage": "https://github.com/ufado/tron-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ufado",
+            "email": "ufiles@proton.me"
+        }
+    ],
+    "require": {
+        "iexbase/tron-api": "^2.0 || ^3.0 || ^3.1",
+        "ionux/phactor": "1.0.8",
+        "kornrunner/keccak": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7 || ^7.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tron\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "tests/"
+        }
+    }
+}
