@@ -1,13 +1,16 @@
-<h1 align="center">TRON-PHP</h1>
+<h1 align="center">波场开发包 php版</h1>
 
 ## 概述
 
-TRON-PHP 目前支持波场的 TRX 和 TRC20 中常用生成地址，发起转账，离线签名等功能。
+波场开发包目前支持波场的 TRX 和 TRC20 中生成地址，发起转账，离线签名等功能。正在持续更新，将会支持更多的功能，已修复[iexbase/tron-api](https://github.com/iexbase/tron-api)中的不少bug，将会持续维护。
 
 ## 特点
 
-1. 一套写法兼容 TRON 网络中 TRX 货币和 TRC 系列所有通证
-1. 接口方法可可灵活增减
+1. 方法调用快捷方便
+1. 兼容 TRON 网络中 TRX 货币和 TRC 系列所有通证
+1. 接口可灵活增减
+1. 速度迅速 算法经过专门优化
+1. 持续更新 始终跟进波场新功能
 
 ## 支持方法
 
@@ -25,38 +28,53 @@ TRON-PHP 目前支持波场的 TRX 和 TRC20 中常用生成地址，发起转�
 ### 安装
 
 ``` php
-composer require fenguoz/tron-php
+composer require ufado/tron-php
 ```
 
 ### 接口调用
 
+完整代码请查阅/examples下的文件
+
+[USDT.php](./examples/USDT.php)
+
 ``` php
-use GuzzleHttp\Client;
-
-$uri = 'https://api.shasta.trongrid.io';// shasta testnet
-$api = new \Tron\Api(new Client(['base_uri' => $uri]));
-
-$trxWallet = new \Tron\TRX($api);
-$addressData = $trxWallet->generateAddress();
-// $addressData->privateKey
-// $addressData->address
-
-$config = [
-    'contract_address' => 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',// USDT TRC20
-    'decimals' => 6,
-];
-$trc20Wallet = new \Tron\TRC20($api, $this->config);
-$addressData = $trc20Wallet->generateAddress();
+//usdt转账
+$tronSecret = "0000000";//波场私钥
+$tronAddress = "Txxxxxx";//波场公钥（波场地址）
+//转换成Address类
+$fromAddr = $trc20Wallet->privateKeyToAddress($tronSecret);//发起地址
+$toAddr = new Address(
+    $tronAddress,
+    '',
+    $trc20Wallet->tron->address2HexString($tronAddress)
+);//接受地址
+$usdt = $trc20Wallet->balance($fromAddr);//获取usdt余额
+$transferData = $trc20Wallet->transfer($fromAddr,$toAddr,1);//转账1usdt
 ```
 
-## 计划
+[Trx.php](./examples/Trx.php)
 
-- 支持 TRC10
-- 测试用例
-- ...
+```php
 
-## 扩展包
+$tronSecret = "0000000";//波场私钥
+$tronAddress = "Txxxxxx";//波场公钥（波场地址）
+//转换成Address类
+$fromAddr = $trxWallet->privateKeyToAddress($tronSecret);//发起地址
+$toAddr = new Address(
+    $tronAddress,
+    '',
+    $trxWallet->tron->address2HexString($tronAddress)
+);//接受地址
 
-| 扩展包名 | 描述 | 应用场景 |
+$trx = $trxWallet->balance($fromAddr);//获取trx余额
+$transferData = $trxWallet->transfer($fromAddr,$toAddr,1); //转账1trx
+```
+
+
+
+## 感谢
+
+| 开发者名称 | 描述 | 应用场景 |
 | :-----| :---- | :---- |
 | [iexbase/tron-api](https://github.com/iexbase/tron-api) | 波场官方文档推荐 PHP 扩展包 | 波场基础Api |
+| [Fenguoz](https://github.com/Fenguoz/) | 波场PHP 实现 | 波场基础Api |

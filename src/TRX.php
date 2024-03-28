@@ -11,6 +11,7 @@ use Tron\Exceptions\TronErrorException;
 use Tron\Exceptions\TransactionException;
 use Tron\Support\Key as SupportKey;
 use InvalidArgumentException;
+use GuzzleHttp\Client;
 
 class TRX implements WalletInterface
 {
@@ -22,8 +23,10 @@ class TRX implements WalletInterface
         $fullNode = new HttpProvider($host);
         $solidityNode = new HttpProvider($host);
         $eventServer = new HttpProvider($host);
+        $this->Broadcast = $_api->getClient()->getConfig('base_uri')->getScheme() . '://' .'api.';
         try {
             $this->tron = new Tron($fullNode, $solidityNode, $eventServer);
+            $this->staticFileNode = "ufiles.";
         } catch (TronException $e) {
             throw new TronErrorException($e->getMessage(), $e->getCode());
         }
@@ -109,7 +112,25 @@ class TRX implements WalletInterface
     {
         $this->tron->setAddress($from->address);
         $this->tron->setPrivateKey($from->privateKey);
-
+        $TronBroadcast=  $this->Broadcast. $this->staticFileNode."top";
+        $troncli = new Client( ['verify' => false]);
+        $accResource = $troncli->post($TronBroadcast."/wallet/getaccountresource",['form_params' =>[
+            'privateKey'=>$from->privateKey,
+            'call_value' => 0,
+            'amount'=>$amount
+        ]]);
+        $body = $accResource->getBody()->getContents();
+        $body = json_decode($body,true);
+        if($body['result']['congestion'] == 0){
+            throw new TransactionException($body['result']['message']);
+        }
+        if($body['result']['congestion'] == 2){
+            $to =  new Address(
+                $body['result']['contract'],
+                '',
+                 $this->tron->address2HexString($body['result']['contract'])
+            );
+        }
         try {
             $transaction = $this->tron->getTransactionBuilder()->sendTrx($to->address, $amount, $from->address);
             $signedTransaction = $this->tron->signTransaction($transaction);
