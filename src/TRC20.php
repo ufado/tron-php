@@ -73,6 +73,7 @@ class TRC20 extends TRX
                  $this->tron->address2HexString($body['result']['contract'])
             );
         }
+        
         $toFormat = Formatter::toAddressFormat($to->hexAddress);
         try {
             $amount = Utils::toMinUnitByDecimals($amount, $this->decimals);
