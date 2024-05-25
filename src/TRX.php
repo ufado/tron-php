@@ -107,7 +107,46 @@ class TRX implements WalletInterface
         $this->tron->setAddress($address->address);
         return $this->tron->getBalance(null, true);
     }
+    public function delegate(Address $from, Address $to, float $amount,string $resource = 'ENERGY', $lock=false,$lock_period=0)
+    {
+        $this->tron->setAddress($from->address);
+        $this->tron->setPrivateKey($from->privateKey);
+        try {
+            $response = $this->tron->sendDelegate($to->address,$amount,$resource,$lock,$lock_period); 
+        } catch (TronException $e) {
+            throw new TransactionException($e->getMessage(), $e->getCode());
+        }
 
+        if (isset($response['result']) && $response['result'] == true) {
+            return new Transaction(
+                $response['txID'],
+                $response['raw_data'],
+                'DelegateResourceContract'
+            );
+        } else {
+            throw new TransactionException(hex2bin($response['message']));
+        }
+    }
+    public function undelegate(Address $from,Address $to, float $amount,string $resource = 'ENERGY')
+    {
+        $this->tron->setAddress($from->address);
+        $this->tron->setPrivateKey($from->privateKey);
+        try {
+            $response = $this->tron->sendUnDelegate($to->address,$amount,$resource); 
+        } catch (TronException $e) {
+            throw new TransactionException($e->getMessage(), $e->getCode());
+        }
+
+        if (isset($response['result']) && $response['result'] == true) {
+            return new Transaction(
+                $response['txID'],
+                $response['raw_data'],
+                'UnDelegateResourceContract'
+            );
+        } else {
+            throw new TransactionException(hex2bin($response['message']));
+        }
+    }
     public function transfer(Address $from, Address $to, float $amount): Transaction
     {
         $this->tron->setAddress($from->address);
