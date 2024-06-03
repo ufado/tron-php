@@ -217,12 +217,36 @@ class TRX implements WalletInterface
         try {
             $detail = $this->tron->getTransaction($txHash);
         } catch (TronException $e) {
-            throw new TransactionException($e->getMessage(), $e->getCode());
+            throw new TronErrorException($e->getMessage(), $e->getCode());
         }
         return new Transaction(
             $detail['txID'],
             $detail['raw_data'],
             $detail['ret'][0]['contractRet'] ?? ''
         );
+    }
+    public function getFrozenEnergyPrice($my){
+        try {
+            $accountres = $this->tron->getAccountResources($my->address);
+        } catch (TronException $e) {
+            throw new TronErrorException($e->getMessage(), $e->getCode());
+        }
+        if(empty($accountres)){
+             throw new TronErrorException("Account is not actived!", 100);
+        }
+        return $accountres['TotalEnergyLimit']/$accountres['TotalEnergyWeight'];
+         
+    }
+    public function getFrozenNetPrice($my){
+        try {
+            $accountres = $this->tron->getAccountResources($my->address);
+        } catch (TronException $e) {
+            throw new TronErrorException($e->getMessage(), $e->getCode());
+        }
+        if(empty($accountres)){
+             throw new TronErrorException("Account is not actived!", 100);
+        }
+        return $accountres['TotalNetLimit']/$accountres['TotalNetWeight'];
+         
     }
 }

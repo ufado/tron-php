@@ -2,13 +2,14 @@
 
 ## 概述
 
-波场开发包目前支持波场的 TRX 和 TRC20 中生成地址，发起转账，离线签名，资源代理和收回等功能。正在持续更新，将会支持更多的功能，已修复[iexbase/tron-api](https://github.com/iexbase/tron-api)中的不少bug，将会持续维护。
+波场开发包目前支持波场的 TRX 和 TRC20 中生成地址，发起转账，离线签名，资源代理和收回，资源价格查询等功能。正在持续更新，将会支持更多的功能，已修复原版不少bug，将会持续维护。
 
 ## 特点
 
 1. 方法调用快捷方便
 1. 兼容 TRON 网络中 TRX 货币和 TRC 系列所有通证
 1. 支持最新的质押2.0中的资源代理和资源回收
+1. 支持实时获取质押获得的资源数量，例如质押1trx获得的能量
 1. 接口可灵活增减
 1. 速度迅速 算法经过专门优化
 1. 持续更新 始终跟进波场新功能
@@ -25,6 +26,8 @@
 - 根据交易哈希查询信息 `transactionReceipt(string $txHash)`
 - 资源代理`delegate(Address $from, Address $to, float $amount,string $resource = 'ENERGY', $lock=false,$lock_period=0)`
 - 资源收回`undelegate(Address $from,Address $to, float $amount,string $resource = 'ENERGY')`
+- 质押1trx获得的能量`getFrozenEnergyPrice(Address $my)`
+- 质押1trx获得的带宽`getFrozenNetPrice(Address $my)`
 
 ## 快速开始
 
@@ -83,6 +86,8 @@ $trxWallet->delegate($fromAddr,$toAddr,1,"BANDWITH");//代理1trx产生的带宽
 $trxWallet->undelegate($fromAddr,$toAddr,"BANDWITH");//收回1trx产生的带宽
 $trxWallet->delegate($fromAddr,$toAddr,1,"ENERGY",true,1200);//代理1trx产生的能量,锁定期1小时，单位为3秒
 $trxWallet->tron->getdelegatedresourceaccountindexv2($fromAddr->address);//获取全部已经代理的资源
+$trxWallet->getFrozenEnergyPrice($toAddr);//质押1trx获得的能量 例如12.369
+$trxWallet->getNetEnergyPrice($toAddr);//质押1trx获得的带宽 例如1.197
 ```
 
 
@@ -97,4 +102,5 @@ $trxWallet->tron->getdelegatedresourceaccountindexv2($fromAddr->address);//获�
 
 ## 联系
 
+项目合作 项目开发 源码定制 请联系
 Https://t.me/ufado_bot

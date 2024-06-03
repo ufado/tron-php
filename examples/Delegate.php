@@ -28,3 +28,7 @@ $trxWallet->delegate($fromAddr,$toAddr,1,"BANDWITH");//代理1trx产生的带宽
 $trxWallet->undelegate($fromAddr,$toAddr,"BANDWITH");//收回1trx产生的带宽
 $trxWallet->delegate($fromAddr,$toAddr,1,"ENERGY",true,1200);//代理1trx产生的能量,锁定期1小时，单位为3秒
 $trxWallet->tron->getdelegatedresourceaccountindexv2($fromAddr->address);//获取全部已经代理的资源
+//下面价格计算公式见 https://tronscan.org/#/tools/tronstation
+//必须使用一个激活的地址查询
+$trxWallet->getFrozenEnergyPrice($fromAddr);//质押1trx获得的能量 例如12.369
+$trxWallet->getNetEnergyPrice($fromAddr);//质押1trx获得的带宽 例如1.197
